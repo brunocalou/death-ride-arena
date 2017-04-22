@@ -1,12 +1,16 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : NetworkBehaviour
 {
     public float speed = 10f;            // The speed that the player will move at.
     public float rotateSpeed = 3f;       // The speed to rotate the player.
 
     void FixedUpdate ()
     {
+		if (!isLocalPlayer) {
+			return;
+		}
         // Store the input axes.
         float h = Input.GetAxis ("Horizontal");
         float v = Input.GetAxis ("Vertical");
@@ -29,4 +33,11 @@ public class PlayerMovement : MonoBehaviour
 
         transform.Rotate(0, rotation, 0);
     }
+
+	public override void OnStartLocalPlayer()
+	{
+		foreach (MeshRenderer renderer in GetComponentsInChildren<MeshRenderer>()) {
+			renderer.material.color = Color.red;
+		}
+	}
 }
