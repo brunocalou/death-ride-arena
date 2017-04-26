@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
+using UnityStandardAssets.Utility;
 
 public class PlayerMovement : NetworkBehaviour
 {
@@ -38,6 +39,12 @@ public class PlayerMovement : NetworkBehaviour
 	{
 		foreach (MeshRenderer renderer in GetComponentsInChildren<MeshRenderer>()) {
 			renderer.material.color = Color.red;
+		}
+
+		GameObject camera = GameObject.FindWithTag ("MainCamera");
+		if (camera != null) {
+			SmoothFollow follow = camera.GetComponent<SmoothFollow>();
+			follow.target = transform;
 		}
 	}
 }
