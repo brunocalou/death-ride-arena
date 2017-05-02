@@ -302,6 +302,65 @@ ModelImporter:
     4300112: Cubo_001
     4300114: Cubo
     4300116: Plano
+    6400000: C_rculo
+    6400002: Cilindro
+    6400004: Cilindro_001
+    6400006: Cilindro_002
+    6400008: Cilindro_003
+    6400010: Cilindro_004
+    6400012: Cilindro_005
+    6400014: Cilindro_006
+    6400016: Cilindro_007
+    6400018: Cubo
+    6400020: Cubo_001
+    6400022: Cubo_002
+    6400024: Cubo_003
+    6400026: Cubo_004
+    6400028: Cubo_005
+    6400030: Cubo_006
+    6400032: Cubo_007
+    6400034: Cubo_008
+    6400036: Cubo_009
+    6400038: Cubo_010
+    6400040: Cubo_011
+    6400042: Cubo_012
+    6400044: Cubo_013
+    6400046: Cubo_014
+    6400048: Cubo_015
+    6400050: Cubo_016
+    6400052: Cubo_017
+    6400054: Cubo_018
+    6400056: Cubo_019
+    6400058: Cubo_020
+    6400060: Cubo_021
+    6400062: Cubo_022
+    6400064: Cubo_023
+    6400066: Cubo_024
+    6400068: Cubo_025
+    6400070: Cubo_026
+    6400072: Cubo_027
+    6400074: Cubo_028
+    6400076: Cubo_029
+    6400078: Cubo_030
+    6400080: Cubo_031
+    6400082: Cubo_032
+    6400084: Cubo_033
+    6400086: Cubo_034
+    6400088: Cubo_035
+    6400090: Cubo_036
+    6400092: Cubo_037
+    6400094: Cubo_038
+    6400096: Cubo_039
+    6400098: Cubo_040
+    6400100: Cubo_041
+    6400102: Cubo_042
+    6400104: Cubo_043
+    6400106: Cubo_044
+    6400108: Cubo_045
+    6400110: Cubo_046
+    6400112: Cubo_047
+    6400114: Cubo_048
+    6400116: Plano
     7400000: Default Take
     9500000: //RootNode
   materials:
@@ -330,7 +389,7 @@ ModelImporter:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
-    addColliders: 0
+    addColliders: 1
     importBlendShapes: 1
     swapUVChannels: 0
     generateSecondaryUV: 0

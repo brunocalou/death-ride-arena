@@ -4,8 +4,13 @@ using UnityStandardAssets.Utility;
 
 public class PlayerMovement : NetworkBehaviour
 {
-    public float speed = 10f;            // The speed that the player will move at.
-    public float rotateSpeed = 3f;       // The speed to rotate the player.
+    public float maxSpeed = 30f;
+    public float maxRotateSpeed = 3f;
+	public float acceleration = 20;
+	public float drag = 50;
+
+	private float speed = 0;
+	private Vector3 lastPosition;
 
     void FixedUpdate ()
     {
@@ -25,12 +30,33 @@ public class PlayerMovement : NetworkBehaviour
 
     void Move (float v)
     {
-        transform.position += transform.forward * Time.deltaTime * speed * v;
+		float measuredSpeed = (transform.position - lastPosition).magnitude / Time.deltaTime * (speed > 0 ? 1 : -1);
+		speed = measuredSpeed;
+
+		speed += acceleration * Time.deltaTime * v;
+
+		// If the speed and the user joystick have different directions, or if v is zero, add the drag
+		if (v * speed <= 0) {
+			speed -= drag * Time.deltaTime * speed / maxSpeed;
+
+			if (Mathf.Abs(speed) < 0.5)
+				speed = 0;
+		}
+
+		if (speed > maxSpeed) {
+			speed = maxSpeed;
+		} else if (speed < -maxSpeed) {
+			speed = -maxSpeed;
+		}
+
+		lastPosition = transform.position;
+
+        transform.position += transform.forward * Time.deltaTime * speed;
     }
 
     void Rotate (float h)
     {
-        float rotation = h * rotateSpeed;
+		float rotation = h * maxRotateSpeed;
 
         transform.Rotate(0, rotation, 0);
     }
