@@ -37,7 +37,7 @@ public class PlayerMovement : NetworkBehaviour
 
         // Rotate the player
 //		Rotate(h * m_Speed / maxSpeed);
-		Rotate(h * maxRotateSpeed * (v < 0 ? -1: 1));
+		Rotate(h * (v < 0 ? -1: 1));
 
 		if (Input.GetButtonDown("Fire1"))
 		{
