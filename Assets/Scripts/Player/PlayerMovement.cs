@@ -14,7 +14,7 @@ public class PlayerMovement : NetworkBehaviour
 
 //	private float m_Speed = 25f;
 	private Vector3 m_LastPosition;
-	private Rigidbody m_Rigidbody;  
+	private Rigidbody m_Rigidbody;
 
 	private void Awake ()
 	{
@@ -115,7 +115,10 @@ public class PlayerMovement : NetworkBehaviour
 			bulletSpawn.position,
 			bulletSpawn.rotation);
 
-		Physics.IgnoreCollision (bullet.GetComponent<Collider> (), GetComponent<Collider> ());
+//		Physics.IgnoreCollision (bullet.GetComponent<Collider> (), GetComponent<Collider> ());
+		Bullet bulletScript = bullet.GetComponent<Bullet>();
+		Debug.Log (bulletScript);
+		bulletScript.emitter = this.gameObject;
 
 		// Add velocity to the bullet
 		bullet.GetComponent<Rigidbody>().velocity = 50 * forward;
