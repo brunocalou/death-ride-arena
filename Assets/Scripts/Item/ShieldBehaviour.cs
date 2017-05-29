@@ -27,6 +27,14 @@ public class ShieldBehaviour: NetworkBehaviour
 					Destroy (projectile);
 				}
 			}
+		} else {
+//			var otherPlayer = other.gameObject;
+//			var health = otherPlayer.GetComponent<Health> ();
+//			if (health != null) {
+//				// Hit another player
+//				Rigidbody body = otherPlayer.gameObject.GetComponent<Rigidbody> ();
+//				body.AddForce ((otherPlayer.transform.position - transform.position) * 30, ForceMode.VelocityChange);
+//			}
 		}
 	}
 

@@ -3,6 +3,20 @@ using System.Collections;
 
 public class Bullet : MonoBehaviour {
 	public GameObject emitter;
+	public AudioClip sound;
+	private AudioSource audioSource;
+	private bool mustDestroyItself = false;
+
+	void Start () {
+		audioSource = GetComponent<AudioSource> ();
+		audioSource.PlayOneShot (sound);
+	}
+
+	void Update () {
+		if (!audioSource.isPlaying && mustDestroyItself) {
+			Destroy(gameObject);
+		}
+	}
 
 	void OnCollisionEnter(Collision collision)
 	{
@@ -18,7 +32,9 @@ public class Bullet : MonoBehaviour {
 			{
 				health.TakeDamage(10);
 			}
-			Destroy(gameObject);
+			mustDestroyItself = true;
+			GetComponent<MeshRenderer> ().enabled = false;
+			GetComponent<Collider> ().enabled = false;
 
 		} else {
 			Physics.IgnoreCollision (collision.collider, GetComponent<Collider> ());

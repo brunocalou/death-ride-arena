@@ -15,6 +15,8 @@ public class PlayerMovement : NetworkBehaviour
 //	private float m_Speed = 25f;
 	private Vector3 m_LastPosition;
 	private Rigidbody m_Rigidbody;
+	private float m_fireRate = 0.5f; // 2 fires per second
+	private float m_fireStartTime = 0;
 
 	private void Awake ()
 	{
@@ -39,27 +41,24 @@ public class PlayerMovement : NetworkBehaviour
 //		Rotate(h * m_Speed / maxSpeed);
 		Rotate(h * (v < 0 ? -1: 1));
 
-		if (Input.GetButtonDown("Fire1"))
+		if ((Time.time - m_fireStartTime > m_fireRate) && (Input.GetButtonDown("Fire1") || Input.GetKeyDown(KeyCode.Z)))
 		{
-			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			RaycastHit floorHit;
-
-			if (Physics.Raycast (ray, out floorHit)) {
-				// Create a vector from the player to the point on the floor the raycast from the mouse hit.
-				Vector3 playerToMouse = floorHit.point - transform.position;
-
-				// Ensure the vector is entirely along the floor plane.
-				playerToMouse.y = 0f;
-
-				// Create a quaternion (rotation) based on looking down the vector from the player to the mouse.
-//				Quaternion newRotation = Quaternion.LookRotation (playerToMouse);
-
-//				print (Vector3.Angle (playerToMouse, transform.forward));
-				if (Vector3.Angle (playerToMouse, transform.forward) < 45) {
-					CmdFire (playerToMouse.normalized);
-				}
-			}
-//			print ("Fire");
+			m_fireStartTime = Time.time;
+			CmdFire(transform.forward);
+//			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+//			RaycastHit floorHit;
+//
+//			if (Physics.Raycast (ray, out floorHit)) {
+//				// Create a vector from the player to the point on the floor the raycast from the mouse hit.
+//				Vector3 playerToMouse = floorHit.point - transform.position;
+//
+//				// Ensure the vector is entirely along the floor plane.
+//				playerToMouse.y = 0f;
+//
+//				if (Vector3.Angle (playerToMouse, transform.forward) < 45) {
+//					CmdFire (playerToMouse.normalized);
+//				}
+//			}
 		}
 
 //		if (Input.GetKeyDown(KeyCode.Space))
