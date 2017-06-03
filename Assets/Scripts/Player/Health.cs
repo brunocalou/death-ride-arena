@@ -22,8 +22,8 @@ public class Health : NetworkBehaviour {
 		if (isLocalPlayer)
 		{
 			spawnPoints = FindObjectsOfType<NetworkStartPosition>();
-			audioSource = GetComponent<AudioSource> ();
 		}
+		audioSource = GetComponent<AudioSource> ();
 	}
 
 	public void TakeDamage(int amount)
@@ -34,8 +34,6 @@ public class Health : NetworkBehaviour {
 		currentHealth -= amount;
 		if (currentHealth <= 0)
 		{
-			audioSource.PlayOneShot (deathAudios [Random.Range (0, deathAudios.Length)]);
-
 			if (destroyOnDeath)
 			{
 				Destroy(gameObject);
@@ -45,7 +43,7 @@ public class Health : NetworkBehaviour {
 				currentHealth = maxHealth;
 
 				// called on the Server, invoked on the Clients
-				RpcRespawn();
+				RpcRespawn(Random.Range (0, deathAudios.Length));
 			}
 		}
 	}
@@ -56,8 +54,10 @@ public class Health : NetworkBehaviour {
 	}
 
 	[ClientRpc]
-	void RpcRespawn()
+	void RpcRespawn(int deathAudioIdx)
 	{
+		audioSource.PlayOneShot (deathAudios [deathAudioIdx]);
+
 		if (isLocalPlayer)
 		{
 			// Set the spawn point to origin as a default value
@@ -67,10 +67,13 @@ public class Health : NetworkBehaviour {
 			if (spawnPoints != null && spawnPoints.Length > 0)
 			{
 				spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)].transform.position;
+				Debug.Log (spawnPoint);
 			}
 
 			// Set the player’s position to the chosen spawn point
-			transform.position = spawnPoint;
+//			transform.position = spawnPoint;
+			transform.GetComponent<Rigidbody> ().position = spawnPoint;
+			Debug.Log (transform.position);
 		}
 	}
 
