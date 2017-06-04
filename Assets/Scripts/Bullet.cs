@@ -12,7 +12,9 @@ public class Bullet : NetworkBehaviour {
 	private bool mustDestroyItself = false;
 
 	void Start () {
-		audioSource = GetComponent<AudioSource> ();
+		//Null Check before getting components...
+		if(audioSource == null)
+			audioSource = GetComponent<AudioSource> ();
 		audioSource.PlayOneShot (sound);
 //
 //		Debug.Log ("Start bullet");
