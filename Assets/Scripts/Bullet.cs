@@ -1,8 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 
-public class Bullet : MonoBehaviour {
+public class Bullet : NetworkBehaviour {
 	public GameObject emitter;
+
+	[SyncVar]
+	public NetworkInstanceId emitterId;
 	public AudioClip sound;
 	private AudioSource audioSource;
 	private bool mustDestroyItself = false;
@@ -10,6 +14,15 @@ public class Bullet : MonoBehaviour {
 	void Start () {
 		audioSource = GetComponent<AudioSource> ();
 		audioSource.PlayOneShot (sound);
+//
+//		Debug.Log ("Start bullet");
+		GameObject obj = ClientScene.FindLocalObject (emitterId);
+//		Debug.Log ("emitterId");
+//		Debug.Log (emitterId);
+//		Debug.Log ("obj");
+//		Debug.Log (obj);
+		if (obj != null)
+			Physics.IgnoreCollision (obj.GetComponent<Collider> (), GetComponent<Collider> ());
 	}
 
 	void Update () {
@@ -20,12 +33,12 @@ public class Bullet : MonoBehaviour {
 
 	void OnCollisionEnter(Collision collision)
 	{
-		Debug.Log ("Bullet collision");
-		Debug.Log (collision.gameObject.tag);
-		Debug.Log (collision.gameObject);
-		Debug.Log (emitter);
+//		Debug.Log ("Bullet collision");
+//		Debug.Log (collision.gameObject.tag);
+//		Debug.Log (collision.gameObject);
+//		Debug.Log (emitter);
 		if (collision.gameObject != this.emitter && collision.gameObject.tag != "Barrier") {
-			Debug.Log ("Deleting it");
+//			Debug.Log ("Deleting it");
 			var hit = collision.gameObject;
 			var health = hit.GetComponent<Health>();
 			if (health != null)

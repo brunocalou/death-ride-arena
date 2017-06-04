@@ -3,14 +3,14 @@ using UnityEngine.Networking;
 
 public class ShieldBehaviour: NetworkBehaviour
 {
-	Collider shieldCollider;
-	GameObject player;
+//	Collider shieldCollider;
+	public GameObject player;
 
-	void Start()
-	{
-		shieldCollider = GetComponent<Collider> ();
-		player = transform.parent.gameObject;
-	}
+//	void Start()
+//	{
+////		shieldCollider = GetComponent<Collider> ();
+//		player = transform.parent.gameObject;
+//	}
 
 	void OnTriggerEnter (Collider other)
 	{

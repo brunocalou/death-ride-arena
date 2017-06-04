@@ -6,21 +6,22 @@ public class PlayerMovement : NetworkBehaviour
 {
     public float maxSpeed = 25f;
     public float maxRotateSpeed = 2f;
+	private Vector3 m_currentVelocity = new Vector3();
 //	public float acceleration = 30;
 //	public float drag = 50;
 
 	public GameObject bulletPrefab;
-	public Transform bulletSpawn;
+	public Rigidbody bulletSpawn;
 
 //	private float m_Speed = 25f;
-	private Vector3 m_LastPosition;
-	private Rigidbody m_Rigidbody;
+	private Vector3 m_lastPosition;
+	private Rigidbody m_rigidbody;
 	private float m_fireRate = 0.5f; // 2 fires per second
 	private float m_fireStartTime = 0;
 
 	private void Awake ()
 	{
-		m_Rigidbody = GetComponent<Rigidbody> ();
+		m_rigidbody = GetComponent<Rigidbody> ();
 //		m_Rigidbody.drag = 1f;
 	}
 
@@ -44,7 +45,8 @@ public class PlayerMovement : NetworkBehaviour
 		if ((Time.time - m_fireStartTime > m_fireRate) && (Input.GetButtonDown("Fire1") || Input.GetKeyDown(KeyCode.Z)))
 		{
 			m_fireStartTime = Time.time;
-			CmdFire(transform.forward);
+//			CmdFire(GetComponent<NetworkView>().viewID.ToString(), bulletSpawn.position, Network.time, m_currentVelocity, bulletSpawn.transform.forward, bulletSpawn.rotation);
+			fire (bulletSpawn.position, bulletSpawn.transform.forward, m_currentVelocity, GetComponent<NetworkIdentity>().netId);
 //			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 //			RaycastHit floorHit;
 //
@@ -91,9 +93,13 @@ public class PlayerMovement : NetworkBehaviour
 //
 //		m_LastPosition = transform.position;
 
-		Vector3 movement = transform.forward * maxSpeed * v * Time.deltaTime;
+		m_currentVelocity = m_rigidbody.transform.forward * maxSpeed * v;
+
+		Vector3 movement = m_currentVelocity * Time.deltaTime;
 //
-		m_Rigidbody.MovePosition(m_Rigidbody.position + movement);
+		m_rigidbody.MovePosition(m_rigidbody.position + movement);
+
+
 
 //		m_Rigidbody.AddForce (transform.forward * v * m_Speed, ForceMode.Force);
     }
@@ -104,25 +110,84 @@ public class PlayerMovement : NetworkBehaviour
 //		m_Rigidbody.AddTorque(0, h * maxRotateSpeed, 0, ForceMode.VelocityChange);
     }
 
-	[Command]
-	void CmdFire(Vector3 forward)
-	{
+//	[Command]
+//	void CmdFire(string emitterId, Vector3 position, double time, Vector3 velocity, Vector3 forward, Quaternion rotation)
+//	{
+////		Debug.Log (Network.time - time);
+////		Debug.Log (velocity);
+////		Debug.Log (velocity * (float)(Network.time - time));
+//		// Create the Bullet from the Bullet Prefab
+//		var bullet = (GameObject)Instantiate (
+//			bulletPrefab,
+//			position + velocity * (float)(Network.time - time),
+//			rotation);
+//
+////		Debug.Log (position);
+////		Debug.Log (bullet.GetComponent<Rigidbody>().position);
+//
+////		Physics.IgnoreCollision (bullet.GetComponent<Collider> (), GetComponent<Collider> ());
+//		Bullet bulletScript = bullet.GetComponent<Bullet>();
+////		Debug.Log (bulletScript);
+//		bulletScript.emitterId = emitterId;
+//		Debug.Log (bulletScript.emitterId);
+//
+//		if (emitterId.Equals(GetComponent<NetworkView>().viewID)) {
+//			Physics.IgnoreCollision (bullet.GetComponent<Collider> (), gameObject.GetComponent<Collider> ());
+//		}
+//
+//		// Add velocity to the bullet
+//		bullet.GetComponent<Rigidbody>().velocity = 50 * forward;
+////		bullet.GetComponent<Rigidbody> ().position += forward.normalized;
+//		// Spawn the bullet to the Clients
+////		NetworkServer.SpawnWithClientAuthority(bullet, connectionToClient);
+//		NetworkServer.Spawn(bullet);
+//
+//		// Destroy the bullet after 2 seconds
+//		Destroy(bullet, 2.0f);
+//	}
 
-		// Create the Bullet from the Bullet Prefab
+	public void fire (Vector3 position, Vector3 direction, Vector3 velocity, NetworkInstanceId emitterId) {
+		if (isServer) {
+			RpcFire(position, direction, velocity, emitterId);
+		} else {
+			CmdFire(position, direction, velocity, emitterId);
+		}
+	}
+
+	[Command]
+	void CmdFire (Vector3 position, Vector3 direction, Vector3 velocity, NetworkInstanceId emitterId) {
+		fire (position, direction, velocity, emitterId);
+	}
+
+	void RpcFire (Vector3 position, Vector3 direction, Vector3 velocity, NetworkInstanceId emitterId) {
+		if (!isServer)
+			return;
+		
 		var bullet = (GameObject)Instantiate (
 			bulletPrefab,
-			bulletSpawn.position,
+			position,
 			bulletSpawn.rotation);
 
-//		Physics.IgnoreCollision (bullet.GetComponent<Collider> (), GetComponent<Collider> ());
+		//		Debug.Log (position);
+		//		Debug.Log (bullet.GetComponent<Rigidbody>().position);
+
+		//		Physics.IgnoreCollision (bullet.GetComponent<Collider> (), GetComponent<Collider> ());
 		Bullet bulletScript = bullet.GetComponent<Bullet>();
-		Debug.Log (bulletScript);
+		//		Debug.Log (bulletScript);
 		bulletScript.emitter = this.gameObject;
+		bulletScript.emitterId = emitterId;
+//		Debug.Log ("emitterId");
+//		Debug.Log (bulletScript.emitterId);
+
+//		if (emitterId.Equals(GetComponent<NetworkView>().viewID)) {
+//			Physics.IgnoreCollision (bullet.GetComponent<Collider> (), gameObject.GetComponent<Collider> ());
+//		}
 
 		// Add velocity to the bullet
-		bullet.GetComponent<Rigidbody>().velocity = 50 * forward;
-//		bullet.GetComponent<Rigidbody> ().position += forward.normalized;
+		bullet.GetComponent<Rigidbody>().velocity = (50 + velocity.magnitude) * direction;
+		//		bullet.GetComponent<Rigidbody> ().position += forward.normalized;
 		// Spawn the bullet to the Clients
+		//		NetworkServer.SpawnWithClientAuthority(bullet, connectionToClient);
 		NetworkServer.Spawn(bullet);
 
 		// Destroy the bullet after 2 seconds
