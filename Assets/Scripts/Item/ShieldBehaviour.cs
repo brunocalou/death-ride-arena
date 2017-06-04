@@ -1,19 +1,26 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 
-public class ShieldBehaviour: NetworkBehaviour
+public class ShieldBehaviour: ItemBehaviour
 {
 //	Collider shieldCollider;
-	public GameObject player;
+	GameObject player;
 
-//	void Start()
-//	{
-////		shieldCollider = GetComponent<Collider> ();
-//		player = transform.parent.gameObject;
-//	}
+
+	[SyncVar]
+	public NetworkInstanceId playerId;
+
+	void Start()
+	{
+//		shieldCollider = GetComponent<Collider> ();
+		behaviourType = BehaviourType.INVINCIBLE;
+		GameObject playerGameObject = ClientScene.FindLocalObject (playerId);
+		player = playerGameObject;
+	}
 
 	void OnTriggerEnter (Collider other)
 	{
+		Debug.Log ("Trigger");
 		if (other.gameObject.tag == "Projectile") {
 			Debug.Log ("Projectile");
 			var projectile = other.gameObject.GetComponent<Bullet> ();
@@ -24,7 +31,8 @@ public class ShieldBehaviour: NetworkBehaviour
 					Physics.IgnoreCollision (other, GetComponent<Collider> ());
 				} else {
 					Debug.Log ("The other guy's bullet");
-					Destroy (projectile);
+					Vector3 velocity = projectile.GetComponent<Rigidbody> ().velocity;
+//					Destroy (projectile);
 				}
 			}
 		} else {

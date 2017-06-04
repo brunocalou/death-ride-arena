@@ -3,10 +3,16 @@ using UnityEngine.Networking;
 
 public class ShieldEffect: ItemEffect
 {
-	public override void apply (GameObject gameObject)
+	public override void apply (NetworkInstanceId playerId)
 	{
-		var shield = (GameObject)Instantiate (prefab, gameObject.transform.position, gameObject.transform.rotation);
-		shield.transform.parent = gameObject.transform;
+//		if (!isServer)
+//			return;
+
+		GameObject playerGameObject = ClientScene.FindLocalObject (playerId);
+		var shield = (GameObject)Instantiate (prefab, playerGameObject.transform.position, playerGameObject.transform.rotation);
+		shield.transform.parent = playerGameObject.transform;
+		shield.GetComponent<ShieldBehaviour> ().playerId = playerId;
+//		NetworkServer.Spawn (shield);
 	}
 }
 

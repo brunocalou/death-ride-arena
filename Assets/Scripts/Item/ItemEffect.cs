@@ -5,5 +5,5 @@ using UnityEngine.Networking;
 public abstract class ItemEffect: NetworkBehaviour
 {
 	public GameObject prefab;
-	public abstract void apply (GameObject gameObject);
+	public abstract void apply (NetworkInstanceId playerId);
 }

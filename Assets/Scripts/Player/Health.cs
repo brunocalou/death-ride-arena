@@ -31,6 +31,16 @@ public class Health : NetworkBehaviour {
 		if (!isServer)
 			return;
 
+		ItemBehaviour[] behaviours = GetComponentsInChildren<ItemBehaviour> ();
+		foreach (ItemBehaviour behaviour in behaviours) {
+			Debug.Log (behaviour);
+			if (behaviour.behaviourType == BehaviourType.INVINCIBLE) {
+				Debug.Log ("will NOT take damage");
+				return;
+			}
+		}
+
+		Debug.Log ("WILL TAKE DAMAGE");
 		currentHealth -= amount;
 		if (currentHealth <= 0)
 		{
@@ -40,10 +50,8 @@ public class Health : NetworkBehaviour {
 			} 
 			else
 			{
-				currentHealth = maxHealth;
-
 				// called on the Server, invoked on the Clients
-				RpcRespawn(Random.Range (0, deathAudios.Length));
+				RpcKill();
 			}
 		}
 	}
@@ -54,12 +62,26 @@ public class Health : NetworkBehaviour {
 	}
 
 	[ClientRpc]
+	public void RpcKill () {
+		if (!isServer)
+			return;
+		RpcRespawn(Random.Range (0, deathAudios.Length));
+	}
+
+	[ClientRpc]
 	void RpcRespawn(int deathAudioIdx)
 	{
 		audioSource.PlayOneShot (deathAudios [deathAudioIdx]);
+		currentHealth = maxHealth;
+
+		ItemBehaviour[] behaviours = GetComponentsInChildren<ItemBehaviour> ();
+		foreach (ItemBehaviour behaviour in behaviours) {
+			Destroy (behaviour.gameObject);
+		}
 
 		if (isLocalPlayer)
 		{
+
 			// Set the spawn point to origin as a default value
 			Vector3 spawnPoint = Vector3.zero;
 
@@ -72,7 +94,11 @@ public class Health : NetworkBehaviour {
 
 			// Set the player’s position to the chosen spawn point
 //			transform.position = spawnPoint;
-			transform.GetComponent<Rigidbody> ().position = spawnPoint;
+			Rigidbody rigidBody = transform.GetComponent<Rigidbody> ();
+			rigidBody.position = spawnPoint;
+			rigidBody.velocity = new Vector3 ();
+			rigidBody.angularVelocity = new Vector3 ();
+
 			Debug.Log (transform.position);
 		}
 	}
