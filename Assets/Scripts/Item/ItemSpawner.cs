@@ -3,25 +3,25 @@ using UnityEngine.Networking;
 
 public class ItemSpawner : NetworkBehaviour {
 
-	public GameObject itemPrefab;
-//	public int numberOfEnemies;
+	public GameObject[] itemPrefabs;
+	private GameObject[] spawnLocations;
 
-	public override void OnStartServer()
+	private float lastSpawnTime = 0;
+	private float spawnTime = 15; // Spawn an item on every 10 seconds
+
+	void Start()
 	{
-//		for (int i=0; i < numberOfEnemies; i++)
-//		{
-			var spawnPosition = new Vector3(
-				Random.Range(-8.0f, 8.0f),
-				0.0f,
-				Random.Range(-8.0f, 8.0f));
+		spawnLocations = GameObject.FindGameObjectsWithTag ("ItemSpawnPoint");
+	}
 
-			var spawnRotation = Quaternion.Euler( 
-				0.0f, 
-				Random.Range(0,180), 
-				0.0f);
+	void FixedUpdate()
+	{
+		if (Time.time - lastSpawnTime > spawnTime) {
+			var spawn = spawnLocations[Random.Range(0, spawnLocations.Length)];
+			var item = (GameObject) Instantiate(itemPrefabs[Random.Range(0, itemPrefabs.Length)], spawn.transform.position, spawn.transform.rotation);
 
-		var item = (GameObject)Instantiate(itemPrefab, spawnPosition, spawnRotation);
-		NetworkServer.Spawn(item);
-//		}
+			NetworkServer.Spawn(item);
+			lastSpawnTime = Time.time;
+		}
 	}
 }
