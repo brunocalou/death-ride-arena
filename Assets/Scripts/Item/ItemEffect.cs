@@ -4,6 +4,16 @@ using UnityEngine.Networking;
 
 public abstract class ItemEffect: NetworkBehaviour
 {
-	public GameObject prefab;
-	public abstract void apply (NetworkInstanceId playerId);
+	[SyncVar]
+	public NetworkInstanceId playerId;
+	public GameObject player;
+	public GameObject instantiatedPrefab;
+	public EffectType effectType;
+
+	public void remove ()
+	{
+		if (this.instantiatedPrefab != null) {
+			Destroy (this.instantiatedPrefab);
+		}
+	}
 }

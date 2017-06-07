@@ -1,6 +1,6 @@
 ﻿using System;
 
-public enum BehaviourType
+public enum EffectType
 {
 	NONE,
 	INVINCIBLE

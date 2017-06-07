@@ -31,10 +31,10 @@ public class Health : NetworkBehaviour {
 		if (!isServer)
 			return;
 
-		ItemBehaviour[] behaviours = GetComponentsInChildren<ItemBehaviour> ();
-		foreach (ItemBehaviour behaviour in behaviours) {
-			Debug.Log (behaviour);
-			if (behaviour.behaviourType == BehaviourType.INVINCIBLE) {
+		ItemEffect[] effects = GetComponentsInChildren<ItemEffect> ();
+		foreach (ItemEffect effect in effects) {
+			Debug.Log (effect);
+			if (effect.effectType == EffectType.INVINCIBLE) {
 				Debug.Log ("will NOT take damage");
 				return;
 			}
@@ -74,9 +74,10 @@ public class Health : NetworkBehaviour {
 		audioSource.PlayOneShot (deathAudios [deathAudioIdx]);
 		currentHealth = maxHealth;
 
-		ItemBehaviour[] behaviours = GetComponentsInChildren<ItemBehaviour> ();
-		foreach (ItemBehaviour behaviour in behaviours) {
-			Destroy (behaviour.gameObject);
+		ItemEffect[] effects = GetComponentsInChildren<ItemEffect> ();
+		foreach (ItemEffect effect in effects) {
+			effect.remove ();
+			Destroy (effect.gameObject);
 		}
 
 		if (isLocalPlayer)
@@ -93,7 +94,6 @@ public class Health : NetworkBehaviour {
 			}
 
 			// Set the player’s position to the chosen spawn point
-//			transform.position = spawnPoint;
 			Rigidbody rigidBody = transform.GetComponent<Rigidbody> ();
 			rigidBody.position = spawnPoint;
 			rigidBody.velocity = new Vector3 ();

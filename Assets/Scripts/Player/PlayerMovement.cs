@@ -123,12 +123,7 @@ public class PlayerMovement : NetworkBehaviour
 		if (!isServer)
 			return;
 		GameObject player = ClientScene.FindLocalObject (playerId);
-//		ItemBehaviour[] behaviours = player.GetComponentsInChildren<ItemBehaviour> ();
-//		foreach (ItemBehaviour behaviour in behaviours) {
-//			Destroy (behaviour.gameObject);
-//		}
 		Health health = player.GetComponent<Health> ();
 		health.RpcKill ();
-//		health.TakeDamage (health.getMaxHealth ());
 	}
 }

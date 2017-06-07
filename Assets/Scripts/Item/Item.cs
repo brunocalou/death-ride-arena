@@ -1,31 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 
-public class Item : MonoBehaviour {
-	ItemEffect effect;
+public class Item: NetworkBehaviour
+{
+	public GameObject prefab;
 
-	void Start() {
-		effect = (ItemEffect) GetComponent(typeof (ItemEffect));
+	public void apply (NetworkInstanceId playerId)
+	{
+		if (prefab != null) {
+			var player = ClientScene.FindLocalObject (playerId);
+			var instantiatedPrefab = (GameObject)Instantiate (prefab, player.transform.position, player.transform.rotation);
+			instantiatedPrefab.transform.parent = player.transform;
+
+			ItemEffect effect = instantiatedPrefab.GetComponent<ItemEffect> ();
+			if (effect != null) {
+				effect.playerId = playerId;
+				effect.player = player;
+				effect.instantiatedPrefab = instantiatedPrefab;
+			}
+		}
 	}
-
-	public ItemEffect getEffect () {
-		return effect;
-	}
-
-//	void OnCollisionEnter(Collision collision) {
-//		Physics.IgnoreCollision (collision.collider, GetComponent<Collider> ());
-//
-//		var hit = collision.gameObject;
-//		var health = hit.GetComponent<Health>();
-//		Debug.Log (health);
-//		if (health != null) {
-//			if (effect != null) {
-//				Debug.Log ("Apply effect");
-//				effect.apply (collision.gameObject);
-//				Destroy(gameObject);
-//			}
-//
-//		}
-//
-//	}
 }

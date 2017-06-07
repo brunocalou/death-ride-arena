@@ -2,13 +2,7 @@
 using System.Collections;
 using UnityEngine.Networking;
 
-public class ItemUser : NetworkBehaviour {
-//	ArrayList itemBehaviours = new ArrayList();
-
-//	void addItemBehaviour (ItemBehaviour item) {
-//		itemBehaviours.Add(item);
-//	}
-
+public class ItemConsumer : NetworkBehaviour {
 	void OnTriggerEnter(Collider collider)
 	{
 		if (!isServer)
@@ -25,18 +19,13 @@ public class ItemUser : NetworkBehaviour {
 	void RpcUseItem (NetworkInstanceId playerId, NetworkInstanceId itemId) {
 		Debug.Log ("Get the item");
 		GameObject itemGameObject = ClientScene.FindLocalObject (itemId);
-//		GameObject playerGameObject = ClientScene.FindLocalObject (playerId);
 
 		if (itemGameObject != null) {
 			Item item = itemGameObject.GetComponent<Item> ();
-			ItemEffect effect = item.getEffect ();
-			if (effect != null) {
-				effect.apply (playerId);
+			if (item != null) {
+				item.apply (playerId);
 				Destroy(item.gameObject);
 			}
-//			ItemBehaviour behaviour = GetComponent<ItemBehaviour> ();
-//			if (behaviour != null)
-//				addItemBehaviour (behaviour);
 		}
 	}
 }
