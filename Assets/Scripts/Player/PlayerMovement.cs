@@ -10,6 +10,7 @@ public class PlayerMovement : NetworkBehaviour
 
 	public GameObject bulletPrefab;
 	public Rigidbody bulletSpawn;
+//	protected GameObject effectbarCanvas;
 
 //	private float m_Speed = 25f;
 	private Vector3 m_lastPosition;
@@ -20,6 +21,8 @@ public class PlayerMovement : NetworkBehaviour
 	private void Awake ()
 	{
 		m_rigidbody = GetComponent<Rigidbody> ();
+//		effectbarCanvas = this.transform.Find ("Effectbar Canvas").gameObject;
+//		effectbarCanvas.SetActive (false);
 	}
 
     void FixedUpdate ()

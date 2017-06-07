@@ -18,6 +18,7 @@ public class Item: NetworkBehaviour
 				effect.playerId = playerId;
 				effect.player = player;
 				effect.instantiatedPrefab = instantiatedPrefab;
+				effect.apply ();
 			}
 		}
 	}

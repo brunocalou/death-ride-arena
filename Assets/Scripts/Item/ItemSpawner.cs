@@ -7,7 +7,7 @@ public class ItemSpawner : NetworkBehaviour {
 	private GameObject[] spawnLocations;
 
 	private float lastSpawnTime = 0;
-	private float spawnTime = 15; // Spawn an item on every 10 seconds
+	private float spawnTime = 15; // Spawn an item on every 15 seconds
 
 	void Start()
 	{
@@ -20,8 +20,8 @@ public class ItemSpawner : NetworkBehaviour {
 			var spawn = spawnLocations[Random.Range(0, spawnLocations.Length)];
 			var item = (GameObject) Instantiate(itemPrefabs[Random.Range(0, itemPrefabs.Length)], spawn.transform.position, spawn.transform.rotation);
 
-			NetworkServer.Spawn(item);
 			lastSpawnTime = Time.time;
+			NetworkServer.Spawn(item);
 		}
 	}
 }

@@ -34,7 +34,7 @@ public class Health : NetworkBehaviour {
 		ItemEffect[] effects = GetComponentsInChildren<ItemEffect> ();
 		foreach (ItemEffect effect in effects) {
 			Debug.Log (effect);
-			if (effect.effectType == EffectType.INVINCIBLE) {
+			if (effect.getEffectType() == EffectType.INVINCIBLE) {
 				Debug.Log ("will NOT take damage");
 				return;
 			}

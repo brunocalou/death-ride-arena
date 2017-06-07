@@ -8,12 +8,60 @@ public abstract class ItemEffect: NetworkBehaviour
 	public NetworkInstanceId playerId;
 	public GameObject player;
 	public GameObject instantiatedPrefab;
-	public EffectType effectType;
+	protected EffectType effectType;
+
+//	private RectTransform effectBar;
+//	private GameObject effectBarCanvas;
+
+	protected float maxLifetime = 10; // seconds
+
+	[SyncVar(hook = "OnChangeLifeTime")]
+	protected float lifetime;
+
+	private float lifetimeStart;
+
+	void FixedUpdate ()
+	{
+		lifetime = maxLifetime - (Time.time - lifetimeStart);
+		if (lifetime <= 0) {
+			this.remove ();
+			Destroy (gameObject);
+		}
+	}
+
+	public void apply ()
+	{
+//		effectBarCanvas = player.GetComponent<PlayerMovement> ().effectbarCanvas;
+//		effectBarCanvas.SetActive (true);
+//
+//		RectTransform[] transform = effectBarCanvas.GetComponentsInChildren<RectTransform>();
+//		
+//		foreach (RectTransform t in transform) {
+//			if (t.name == "EffectbarForeground") {
+//				effectBar = t;
+//				break;
+//			}
+//		}
+
+		lifetime = maxLifetime;
+		lifetimeStart = Time.time;
+	}
 
 	public void remove ()
 	{
+//		effectBarCanvas.SetActive (false);
+
 		if (this.instantiatedPrefab != null) {
 			Destroy (this.instantiatedPrefab);
 		}
+	}
+
+	void OnChangeLifeTime (float currentLifetime)
+	{
+//		effectBar.sizeDelta = new Vector2(100 * currentLifetime / maxLifetime, effectBar.sizeDelta.y);
+	}
+
+	public EffectType getEffectType () {
+		return this.effectType;
 	}
 }
