@@ -3,12 +3,12 @@ using System.Collections;
 using UnityEngine.Networking;
 
 public class ItemConsumer : NetworkBehaviour {
-	void OnTriggerEnter(Collider collider)
+	void OnCollisionEnter(Collision collision)
 	{
 		if (!isServer)
 			return;
 		Debug.Log("TRIGGERED");
-		var gameObj = collider.gameObject;
+		var gameObj = collision.gameObject;
 		var item = gameObj.GetComponent<Item>();
 		if (item != null) {
 			RpcUseItem (GetComponent<NetworkIdentity> ().netId, item.GetComponent<NetworkIdentity>().netId);	

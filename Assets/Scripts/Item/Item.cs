@@ -22,4 +22,25 @@ public class Item: NetworkBehaviour
 			}
 		}
 	}
+
+	void OnCollisionEnter(Collision collision)
+	{
+		if (!isServer)
+			return;
+		Debug.Log ("Player collision");
+		if (collision.gameObject.GetComponent<InstantKill> () != null) {
+			RpcDestroyItem (gameObject.GetComponent<NetworkIdentity>().netId);
+		}
+	}
+
+	[ClientRpc]
+	void RpcDestroyItem (NetworkInstanceId id) {
+		if (!isServer)
+			return;
+		GameObject item = ClientScene.FindLocalObject (id);
+		if (item != null) {
+			Debug.Log ("Destroyed item");
+			Destroy (item);
+		}
+	}
 }
