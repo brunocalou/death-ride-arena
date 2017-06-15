@@ -85,17 +85,21 @@ public class Health : NetworkBehaviour {
 
 			// Set the spawn point to origin as a default value
 			Vector3 spawnPoint = Vector3.zero;
+			Quaternion spawnRotation = new Quaternion();
 
 			// If there is a spawn point array and the array is not empty, pick one at random
 			if (spawnPoints != null && spawnPoints.Length > 0)
 			{
-				spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)].transform.position;
+				NetworkStartPosition spawn = spawnPoints [Random.Range (0, spawnPoints.Length)];
+				spawnPoint = spawn.transform.position;
+				spawnRotation = spawn.transform.rotation;
 				Debug.Log (spawnPoint);
 			}
 
 			// Set the player’s position to the chosen spawn point
 			Rigidbody rigidBody = transform.GetComponent<Rigidbody> ();
 			rigidBody.position = spawnPoint;
+			rigidBody.rotation = spawnRotation;
 			rigidBody.velocity = new Vector3 ();
 			rigidBody.angularVelocity = new Vector3 ();
 
