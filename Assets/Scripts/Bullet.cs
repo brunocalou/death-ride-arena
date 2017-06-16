@@ -4,18 +4,21 @@ using UnityEngine.Networking;
 
 public class Bullet : NetworkBehaviour {
 	public GameObject emitter;
+	public int damage = 10;
 
 	[SyncVar]
 	public NetworkInstanceId emitterId;
 	public AudioClip sound;
+	public AudioClip hitSound;
 	private AudioSource audioSource;
 	private bool mustDestroyItself = false;
 
 	void Start () {
 		//Null Check before getting components...
-		if(audioSource == null)
+		if (audioSource == null) {
 			audioSource = GetComponent<AudioSource> ();
-		audioSource.PlayOneShot (sound);
+			audioSource.PlayOneShot (sound);
+		}
 //
 //		Debug.Log ("Start bullet");
 		GameObject obj = ClientScene.FindLocalObject (emitterId);
@@ -45,11 +48,15 @@ public class Bullet : NetworkBehaviour {
 			var health = hit.GetComponent<Health>();
 			if (health != null)
 			{
-				health.TakeDamage(10);
+				health.TakeDamage(damage);
+
+				if (hitSound != null && Random.Range (0, 5) == 0) {
+					audioSource.PlayOneShot (hitSound);
+				}
 			}
 			mustDestroyItself = true;
-			GetComponent<MeshRenderer> ().enabled = false;
-			GetComponent<Collider> ().enabled = false;
+			gameObject.GetComponent<MeshRenderer> ().enabled = false;
+			gameObject.GetComponent<Collider> ().enabled = false;
 
 		} else {
 			Physics.IgnoreCollision (collision.collider, GetComponent<Collider> ());

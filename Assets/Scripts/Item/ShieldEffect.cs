@@ -35,5 +35,8 @@ public class ShieldEffect: ItemEffect
 			//			}
 		}
 	}
+
+	override protected void OnRemove(){
+	}
 }
 

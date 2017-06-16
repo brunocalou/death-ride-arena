@@ -10,6 +10,8 @@ public abstract class ItemEffect: NetworkBehaviour
 	public GameObject instantiatedPrefab;
 	protected EffectType effectType;
 
+	protected abstract void OnRemove();
+
 //	private RectTransform effectBar;
 //	private GameObject effectBarCanvas;
 
@@ -49,6 +51,7 @@ public abstract class ItemEffect: NetworkBehaviour
 
 	public void remove ()
 	{
+		this.OnRemove ();
 //		effectBarCanvas.SetActive (false);
 
 		if (this.instantiatedPrefab != null) {
