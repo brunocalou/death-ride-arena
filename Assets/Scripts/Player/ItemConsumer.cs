@@ -7,24 +7,32 @@ public class ItemConsumer : NetworkBehaviour {
 	{
 		if (!isServer)
 			return;
-		Debug.Log("TRIGGERED");
 		var gameObj = collision.gameObject;
 		var item = gameObj.GetComponent<Item>();
 		if (item != null) {
-			RpcUseItem (GetComponent<NetworkIdentity> ().netId, item.GetComponent<NetworkIdentity>().netId);	
+				RpcUseItem (GetComponent<NetworkIdentity> ().netId, item.GetComponent<NetworkIdentity> ().netId);
 		}
 	}
 
 	[ClientRpc]
 	void RpcUseItem (NetworkInstanceId playerId, NetworkInstanceId itemId) {
-		Debug.Log ("Get the item");
 		GameObject itemGameObject = ClientScene.FindLocalObject (itemId);
 
 		if (itemGameObject != null) {
 			Item item = itemGameObject.GetComponent<Item> ();
 			if (item != null) {
+				GameObject player = ClientScene.FindLocalObject (playerId);
+				ItemEffect[] effects = player.GetComponentsInChildren<ItemEffect> ();
+				ItemEffect itemEffect = item.prefab.GetComponent<ItemEffect> ();
+
+				foreach (var effect in effects) {
+					if (effect.GetType ().Equals (itemEffect.GetType())) {
+						effect.remove ();
+					}
+				}
+
 				item.apply (playerId);
-				Destroy(item.gameObject);
+				Destroy(itemGameObject);
 			}
 		}
 	}

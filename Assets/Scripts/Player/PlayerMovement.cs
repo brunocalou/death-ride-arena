@@ -39,7 +39,7 @@ public class PlayerMovement : NetworkBehaviour
 		Move (v);
 
         // Rotate the player
-		Rotate(h * (v < 0 ? -1: 1));
+		Rotate(h);
 
 		if ((Time.time - m_fireStartTime > m_fireRate) && (Input.GetButtonDown("Fire1") || Input.GetKeyDown(KeyCode.Z)))
 		{
@@ -100,9 +100,9 @@ public class PlayerMovement : NetworkBehaviour
 
 	public override void OnStartLocalPlayer()
 	{
-		foreach (MeshRenderer renderer in GetComponentsInChildren<MeshRenderer>()) {
-			renderer.material.color = Color.red;
-		}
+//		foreach (MeshRenderer renderer in GetComponentsInChildren<MeshRenderer>()) {
+//			renderer.material.color = Color.red;
+//		}
 
 		GameObject camera = GameObject.FindWithTag ("MainCamera");
 		if (camera != null) {
@@ -115,7 +115,7 @@ public class PlayerMovement : NetworkBehaviour
 	{
 		if (!isServer)
 			return;
-		Debug.Log ("Player collision");
+//		Debug.Log ("Player collision");
 		if (collision.gameObject.GetComponent<InstantKill> () != null) {
 			RpcKill (gameObject.GetComponent<NetworkIdentity>().netId);
 		}

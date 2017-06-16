@@ -31,6 +31,12 @@ public abstract class ItemEffect: NetworkBehaviour
 		}
 	}
 
+	public void reset ()
+	{
+		lifetime = maxLifetime;
+		lifetimeStart = Time.time;
+	}
+
 	public void apply ()
 	{
 //		effectBarCanvas = player.GetComponent<PlayerMovement> ().effectbarCanvas;
@@ -45,8 +51,7 @@ public abstract class ItemEffect: NetworkBehaviour
 //			}
 //		}
 
-		lifetime = maxLifetime;
-		lifetimeStart = Time.time;
+		this.reset ();
 	}
 
 	public void remove ()

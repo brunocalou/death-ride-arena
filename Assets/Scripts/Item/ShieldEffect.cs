@@ -10,7 +10,7 @@ public class ShieldEffect: ItemEffect
 
 	void OnTriggerEnter (Collider other)
 	{
-		Debug.Log ("Trigger");
+//		Debug.Log ("Trigger");
 		if (other.gameObject.tag == "Projectile") {
 			Debug.Log ("Projectile");
 			var projectile = other.gameObject.GetComponent<Bullet> ();
@@ -26,13 +26,13 @@ public class ShieldEffect: ItemEffect
 				}
 			}
 		} else {
-			//			var otherPlayer = other.gameObject;
-			//			var health = otherPlayer.GetComponent<Health> ();
-			//			if (health != null) {
-			//				// Hit another player
-			//				Rigidbody body = otherPlayer.gameObject.GetComponent<Rigidbody> ();
-			//				body.AddForce ((otherPlayer.transform.position - transform.position) * 30, ForceMode.VelocityChange);
-			//			}
+//			Rigidbody body = other.gameObject.GetComponent<Rigidbody> ();
+//			if (body == null) {
+//				// Some objects (boxes) handle collision on the children, so get teh rigid body on the parent
+//				body = other.gameObject.transform.parent.GetComponent<Rigidbody> ();
+//			}
+//			if (body != null)
+//				body.AddForce ((other.transform.position - transform.position) * 2, ForceMode.VelocityChange);
 		}
 	}
 

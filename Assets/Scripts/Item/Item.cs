@@ -27,7 +27,7 @@ public class Item: NetworkBehaviour
 	{
 		if (!isServer)
 			return;
-		Debug.Log ("Player collision");
+//		Debug.Log ("Player collision");
 		if (collision.gameObject.GetComponent<InstantKill> () != null) {
 			RpcDestroyItem (gameObject.GetComponent<NetworkIdentity>().netId);
 		}
