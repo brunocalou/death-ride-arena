@@ -5,6 +5,21 @@ using UnityEngine.Networking;
 public class Item: NetworkBehaviour
 {
 	public GameObject prefab;
+	public AudioClip[] startAudios;
+	private AudioClip startAudio;
+
+	public void Start () {
+		if (isServer && startAudios.Length > 0) {
+			RpcSetAudio(Random.Range (0, this.startAudios.Length));
+		}
+	}
+
+	[ClientRpc]
+	private void RpcSetAudio(int audioIdx)
+	{
+		Debug.Log ("Set audio to " + audioIdx);
+		this.startAudio = this.startAudios [audioIdx];
+	}
 
 	public void apply (NetworkInstanceId playerId)
 	{
@@ -20,16 +35,45 @@ public class Item: NetworkBehaviour
 				effect.instantiatedPrefab = instantiatedPrefab;
 				effect.apply ();
 			}
+
+			if (startAudio != null) {
+				AudioSource audioSource = player.GetComponent<AudioSource> ();
+				if (audioSource != null) {
+					audioSource.enabled = true;
+					audioSource.PlayOneShot (startAudio);
+				}
+			}
 		}
 	}
 
 	void OnCollisionEnter(Collision collision)
 	{
+		if (collision.gameObject.GetComponent<PlayerMovement> () != null) {
+			Physics.IgnoreCollision (this.gameObject.GetComponent<Collider> (), collision.collider);
+			var renderer = this.gameObject.GetComponent<Renderer> ();
+
+			if (renderer != null) {
+				renderer.enabled = false;
+			} else {
+				foreach (var rend in this.gameObject.GetComponentsInChildren<Renderer>()) {
+					rend.enabled = false;
+				}
+			}
+
+			var collider = this.gameObject.GetComponent<Collider> ();
+			if (collider) {
+				collider.enabled = false;
+			} else {
+				foreach (var col in this.gameObject.GetComponentsInChildren<Collider>()) {
+					col.enabled = false;
+				}
+			}
+		}
+
 		if (!isServer)
 			return;
-//		Debug.Log ("Player collision");
 		if (collision.gameObject.GetComponent<InstantKill> () != null) {
-			RpcDestroyItem (gameObject.GetComponent<NetworkIdentity>().netId);
+			RpcDestroyItem (gameObject.GetComponent<NetworkIdentity> ().netId);
 		}
 	}
 
@@ -37,9 +81,9 @@ public class Item: NetworkBehaviour
 	void RpcDestroyItem (NetworkInstanceId id) {
 		if (!isServer)
 			return;
+
 		GameObject item = ClientScene.FindLocalObject (id);
 		if (item != null) {
-			Debug.Log ("Destroyed item");
 			Destroy (item);
 		}
 	}

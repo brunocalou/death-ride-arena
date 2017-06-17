@@ -90,6 +90,9 @@ public class PlayerMovement : NetworkBehaviour
 		bulletScript.emitter = this.gameObject;
 		bulletScript.emitterId = emitterId;
 
+		Vector3 scale = bullet.transform.localScale;
+		bullet.transform.localScale = scale * transform.localScale.x;
+
 		// Add velocity to the bullet
 		bullet.GetComponent<Rigidbody>().velocity = (50 + velocity.magnitude) * direction;
 		NetworkServer.Spawn(bullet);

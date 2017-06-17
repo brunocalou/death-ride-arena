@@ -10,7 +10,7 @@ public class ItemConsumer : NetworkBehaviour {
 		var gameObj = collision.gameObject;
 		var item = gameObj.GetComponent<Item>();
 		if (item != null) {
-				RpcUseItem (GetComponent<NetworkIdentity> ().netId, item.GetComponent<NetworkIdentity> ().netId);
+			RpcUseItem (GetComponent<NetworkIdentity> ().netId, item.GetComponent<NetworkIdentity> ().netId);
 		}
 	}
 

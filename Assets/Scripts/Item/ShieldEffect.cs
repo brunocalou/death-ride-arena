@@ -6,11 +6,16 @@ public class ShieldEffect: ItemEffect
 	void Start()
 	{
 		this.effectType = EffectType.INVINCIBLE;
+		Vector3 scale = new Vector3 (
+			                this.instantiatedPrefab.transform.localScale.x * this.player.transform.localScale.x,
+			                this.instantiatedPrefab.transform.localScale.y * this.player.transform.localScale.y,
+			                this.instantiatedPrefab.transform.localScale.z * this.player.transform.localScale.z
+		                );
+		this.instantiatedPrefab.transform.localScale = scale;
 	}
 
 	void OnTriggerEnter (Collider other)
 	{
-//		Debug.Log ("Trigger");
 		if (other.gameObject.tag == "Projectile") {
 			Debug.Log ("Projectile");
 			var projectile = other.gameObject.GetComponent<Bullet> ();
@@ -26,6 +31,11 @@ public class ShieldEffect: ItemEffect
 				}
 			}
 		} else {
+			Health health = other.GetComponent<Health> ();
+			if (health != null) {
+				Debug.Log ("DAMAGE SHIELD");
+				health.TakeDamage (10);
+			}
 //			Rigidbody body = other.gameObject.GetComponent<Rigidbody> ();
 //			if (body == null) {
 //				// Some objects (boxes) handle collision on the children, so get teh rigid body on the parent
@@ -37,6 +47,9 @@ public class ShieldEffect: ItemEffect
 	}
 
 	override protected void OnRemove(){
+	}
+
+	override protected void OnApply () {
 	}
 }
 

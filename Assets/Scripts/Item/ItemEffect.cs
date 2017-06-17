@@ -11,6 +11,7 @@ public abstract class ItemEffect: NetworkBehaviour
 	protected EffectType effectType;
 
 	protected abstract void OnRemove();
+	protected abstract void OnApply ();
 
 //	private RectTransform effectBar;
 //	private GameObject effectBarCanvas;
@@ -52,6 +53,7 @@ public abstract class ItemEffect: NetworkBehaviour
 //		}
 
 		this.reset ();
+		this.OnApply();
 	}
 
 	public void remove ()
