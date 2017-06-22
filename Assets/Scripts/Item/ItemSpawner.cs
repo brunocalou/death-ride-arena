@@ -7,7 +7,7 @@ public class ItemSpawner : NetworkBehaviour {
 	private GameObject[] spawnLocations;
 
 	private float lastSpawnTime = 0;
-	private float spawnTime = 1; // Spawn an item on every 45 seconds
+	private float spawnTime = 15; // Spawn an item every x seconds
 	private int spawnAttempts = 0;
 	private int maxSpawnAttempts = 5;
 

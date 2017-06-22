@@ -17,6 +17,7 @@ public class PlayerMovement : NetworkBehaviour
 	private Rigidbody m_rigidbody;
 	private float m_fireRate = 0.5f; // 2 fires per second
 	private float m_fireStartTime = 0;
+	private string m_playerName;
 
 	private void Awake ()
 	{

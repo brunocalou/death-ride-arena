@@ -9,6 +9,7 @@ public class Health : NetworkBehaviour {
 	public bool destroyOnDeath;
 	public AudioClip[] deathAudios;
 	private AudioSource audioSource;
+	private int deathCounter = 0;
 
 	[SyncVar(hook = "OnChangeHealth")]
 	public int currentHealth = maxHealth;
@@ -16,6 +17,14 @@ public class Health : NetworkBehaviour {
 	public RectTransform healthBar;
 
 	private NetworkStartPosition[] spawnPoints;
+
+	public int getNumberOfDeaths () {
+		return deathCounter;
+	}
+
+	public void resetDeaths () {
+		deathCounter = 0;
+	}
 
 	void Start ()
 	{
@@ -71,6 +80,7 @@ public class Health : NetworkBehaviour {
 	[ClientRpc]
 	void RpcRespawn(int deathAudioIdx)
 	{
+		deathCounter += 1;
 		audioSource.PlayOneShot (deathAudios [deathAudioIdx]);
 		currentHealth = maxHealth;
 
@@ -82,7 +92,6 @@ public class Health : NetworkBehaviour {
 
 		if (isLocalPlayer)
 		{
-
 			// Set the spawn point to origin as a default value
 			Vector3 spawnPoint = Vector3.zero;
 			Quaternion spawnRotation = new Quaternion();
